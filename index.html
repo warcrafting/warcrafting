@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Crafting</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Crafting</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <form action="">
+                    <select name="" id="regionList">
+                        <option selected="selected" value="us">US</option>
+                        <option value="eu">EU</option>
+                        <option value="kr">KR</option>
+                        <option value="tw">TW</option>
+                        <option value="cn">CN</option>
+                    </select>
+                </form>
+                <form action="">
+                    <select name="realmSelection" id="realmList"></select>
+                </form>
+
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                content
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                list
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+var regionSelected = $('#regionList').val(),
+    realmSelected;
+// https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=baj26st2946636hyxkt4pacera647jba
+$.getJSON('https://' + regionSelected + '.api.battle.net/wow/realm/status?locale=en_US&apikey=baj26st2946636hyxkt4pacera647jba', function(data){
+    console.log(data);
+    var items = [];
+    for (var i in data.realms){
+        items.push('<option class="realm" value="' + data.realms[i]['slug'] + '">' + data.realms[i]['name'] + '</option>');
+    }
+    $('#realmList').append(items);
+    $('.realm:first').attr('selected', true);
+    var realmSelected = $('#realmList').val();
+    console.log(realmSelected);
+    getAhUrl(realmSelected, regionSelected);
+});
+function getAhUrl(realm, region){
+    $.getJSON('https://' + region + '.api.battle.net/wow/auction/data/' + realm + '?locale=en_US&apikey=baj26st2946636hyxkt4pacera647jba', function(data){
+        var ahDataUrl = data.files[0]['url'];
+        $.getJSON(ahDataUrl, function(data){
+            console.log('successssss!');
+        });
+    });
+}
+</script>
+</html>
